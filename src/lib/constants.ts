@@ -6,7 +6,7 @@ const devEnv = !localEnv && !prodEnv;
 const devOrLocalEnv = devEnv || localEnv;
 // Core Web App (CWA)
 const cwaServerHost = process.env.CWA_SERVER_HOST || "http://localhost";
-const cwaServerPort = process.env.CWA_SERVER_PORT || 3091;
+const cwaServerPort = process.env.CWA_SERVER_PORT || 3093;
 const cwaServerUrl = process.env.NEXT_PUBLIC_CWA_SERVER_URL || `${cwaServerHost}:${cwaServerPort}`;
 
 export const constants = Object.freeze({

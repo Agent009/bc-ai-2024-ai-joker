@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useChat } from "ai/react";
 import { getApiUrl } from "@lib/api.ts";
 import { constants } from "@lib/constants.ts";
-import { genres, tones } from "@lib/storyTeller";
+import { jokeTypes, topics, tones } from "@lib/jokeParams";
 
 export default function Chat() {
   const { messages, append, isLoading } = useChat({
@@ -16,6 +16,7 @@ export default function Chat() {
   // console.log("page -> input", input, "messages", messages);
 
   const [state, setState] = useState({
+    jokeType: "",
     genre: "",
     tone: "",
   });
@@ -31,14 +32,28 @@ export default function Chat() {
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow overflow-y-auto p-4 max-w-3xl mx-auto">
         <div className="mx-auto space-y-2">
-          <h2 className="text-3xl font-bold">Story Telling App</h2>
-          <p className="text-zinc-500 dark:text-zinc-400">Customize the story by selecting the genre and tone.</p>
+          <h2 className="text-3xl font-bold">Mr. A.I. Jokatastic</h2>
+          <p className="text-zinc-500 dark:text-zinc-400">What type of joke would you like to hear today?</p>
         </div>
         <div className="space-y-4 bg-opacity-25 bg-gray-700 rounded-lg p-4 mt-4">
-          <h3 className="text-xl font-semibold">Genre</h3>
+          <h3 className="text-xl font-semibold">Type</h3>
 
           <div className="flex flex-wrap justify-center">
-            {genres.map(({ value, emoji }) => (
+            {jokeTypes.map(({ value, emoji }) => (
+              <div key={value} className="p-4 m-2 bg-opacity-25 bg-gray-600 rounded-lg">
+                <input id={value} type="radio" value={value} name="jokeType" onChange={handleChange} />
+                <label className="ml-2" htmlFor={value}>
+                  {`${emoji} ${value}`}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-4 bg-opacity-25 bg-gray-700 rounded-lg p-4 mt-4">
+          <h3 className="text-xl font-semibold">Topic</h3>
+
+          <div className="flex flex-wrap justify-center">
+            {topics.map(({ value, emoji }) => (
               <div key={value} className="p-4 m-2 bg-opacity-25 bg-gray-600 rounded-lg">
                 <input id={value} type="radio" value={value} name="genre" onChange={handleChange} />
                 <label className="ml-2" htmlFor={value}>
@@ -64,15 +79,15 @@ export default function Chat() {
         </div>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2 rounded disabled:opacity-50"
-          disabled={isLoading || !state.genre || !state.tone}
+          disabled={isLoading || !state.jokeType || !state.genre || !state.tone}
           onClick={() =>
             append({
               role: "user",
-              content: `Generate a ${state.genre} story in a ${state.tone} tone`,
+              content: `Generate a ${state.jokeType} type of joke for the topic of ${state.genre} in a ${state.tone} tone`,
             })
           }
         >
-          Generate Story
+          Generate Joke
         </button>
         <div
           hidden={messages.length === 0 || messages[messages.length - 1]?.content.startsWith("Generate")}
