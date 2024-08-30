@@ -6,20 +6,23 @@ import { constants } from "@lib/constants.ts";
 import { jokeTypes, topics, tones } from "@lib/jokeParams";
 
 export default function Chat() {
+  const [state, setState] = useState({
+    jokeType: "",
+    genre: "",
+    tone: "",
+    temperature: "" + constants.openAI.temperature,
+  });
   const { messages, append, isLoading } = useChat({
     api: getApiUrl(constants.routes.api.chat),
     keepLastMessageOnError: true,
     onError(error) {
       console.log("error", error);
     },
+    body: {
+      temperature: parseFloat(state.temperature),
+    },
   });
   // console.log("page -> input", input, "messages", messages);
-
-  const [state, setState] = useState({
-    jokeType: "",
-    genre: "",
-    tone: "",
-  });
 
   const handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     setState({
@@ -76,6 +79,32 @@ export default function Chat() {
               </div>
             ))}
           </div>
+        </div>
+        <div className="space-y-4 bg-opacity-25 bg-gray-700 rounded-lg p-4 mt-2">
+          <h3 className="text-xl font-semibold">Temperature</h3>
+
+          <div className="flex items-center justify-center space-x-4">
+            <span role="img" aria-label="Deterministic">
+              🧊
+            </span>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={state.temperature}
+              onChange={handleChange}
+              name="temperature"
+              className="w-64 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            <span role="img" aria-label="Random">
+              🎲
+            </span>
+          </div>
+          <p className="text-center mt-2">
+            Temperature: {state.temperature || constants.openAI.temperature} (
+            {Number(state.temperature) < 0.5 ? "More deterministic" : "More random"})
+          </p>
         </div>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2 rounded disabled:opacity-50"

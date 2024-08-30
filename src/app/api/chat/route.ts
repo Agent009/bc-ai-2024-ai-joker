@@ -14,10 +14,12 @@ const openai = createOpenAI({
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, temperature = constants.openAI.temperature } = await req.json();
+    // console.log("api -> chat -> route -> POST -> temperature", temperature);
 
     const result = await streamText({
       model: openai(constants.openAI.models.chat),
+      temperature: temperature,
       messages: convertToCoreMessages([
         {
           role: "system",
