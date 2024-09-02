@@ -11,6 +11,8 @@ export default function Chat() {
     genre: "",
     tone: "",
     temperature: "" + constants.openAI.temperature,
+    evaluation: "",
+    isEvaluated: false, // Add isEvaluated state
   });
   const { messages, append, isLoading } = useChat({
     api: getApiUrl(constants.routes.api.chat),
@@ -22,13 +24,37 @@ export default function Chat() {
       temperature: parseFloat(state.temperature),
     },
   });
-  // console.log("page -> input", input, "messages", messages);
+
+  // Function to evaluate the joke
+  const evaluateJoke = async (joke: string) => {
+    // Replace with your evaluation logic or API call
+    const evaluation = await fetch(getApiUrl(constants.routes.api.evaluate), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ joke }),
+    }).then((res) => res.json());
+    console.log("page -> evaluateJoke -> evaluation", evaluation.text);
+    setState((prevState) => ({
+      ...prevState,
+      evaluation: evaluation.text, // Assuming the API returns { result: "funny" | "appropriate" | "offensive" }
+      isEvaluated: true, // Set isEvaluated to true after evaluation
+    }));
+  };
 
   const handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     setState({
       ...state,
       [name]: value,
+      isEvaluated: false, // Reset isEvaluated when a new joke is generated
     });
+  };
+
+  const handleEvaluateClick = () => {
+    if (messages.length > 0 && !messages[messages.length - 1]?.content.startsWith("Generate")) {
+      evaluateJoke(messages[messages.length - 1]?.content);
+    }
   };
 
   return (
@@ -123,6 +149,18 @@ export default function Chat() {
           className="bg-opacity-25 bg-gray-700 rounded-lg p-4 mt-5"
         >
           {messages[messages.length - 1]?.content}
+          {!isLoading && (
+            <button
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mt-2 rounded"
+              onClick={handleEvaluateClick}
+            >
+              Evaluate Joke
+            </button>
+          )}
+        </div>
+        <div hidden={!state.isEvaluated} className="bg-opacity-25 bg-gray-700 rounded-lg p-4 mt-5">
+          <h3 className="text-xl font-semibold">Joke Evaluation</h3>
+          <p>{state.evaluation}</p>
         </div>
       </div>
     </div>

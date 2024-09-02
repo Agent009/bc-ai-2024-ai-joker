@@ -50,6 +50,7 @@ export const constants = Object.freeze({
     api: {
       base: "/api/",
       chat: "chat",
+      evaluate: "evaluate",
       generateImage: "images",
       generateAudio: "audio",
     },
