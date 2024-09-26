@@ -1,5 +1,7 @@
-# Encode_AI-and-GPT-Bootcamp-Q3-2024
-AI Joker - Parameter-Based Joke Generation Application
+# Mr. A.I. Jokatastic - Parameter-Based AI Joke Generator
+
+* Generates different **types** of jokes based on the selected **tone** and **mood** settings.
+* Adjust randomness by varying the **temperature**.
 
 ## Instructions / README
 * [Lesson-08 / Weekend Project](https://github.com/Encode-Club-AI-Bootcamp/Generative-AI-Applications/blob/main/Lesson-08/README.md)
